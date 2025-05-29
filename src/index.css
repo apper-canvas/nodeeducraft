@@ -84,6 +84,23 @@
   html {
     font-size: 16px;
   }
+/* Modal backdrop styling */
+.modal-backdrop {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Modal animation styles */
+.modal-enter {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.modal-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 200ms, transform 200ms;
+}
 /* Video Player Styles */
 .slider {
   -webkit-appearance: none;

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ApperIcon from '../ApperIcon';
 import { toast } from 'react-toastify';
+import CreateModuleModal from './CreateModuleModal';
 
 const ModulesTab = ({ 
   modules, 
@@ -17,38 +18,7 @@ const ModulesTab = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [selectedTemplate, setSelectedTemplate] = useState('custom');
-// Validation and module creation handler
-  const handleCreateModule = () => {
-    // Validate required fields
-    if (!currentModule.title || currentModule.title.trim() === '') {
-      toast.error('Please enter a module title before creating the module.');
-      return;
-    }
-
-    if (currentModule.title.trim().length < 3) {
-      toast.error('Module title must be at least 3 characters long.');
-      return;
-    }
-
-    // Call the addModule function passed as prop
-    try {
-      addModule();
-      // Reset form after successful creation
-      setCurrentModule({ title: '', description: '', content: [] });
-      setSelectedTemplate('custom');
-      toast.success('Module created successfully!');
-    } catch (error) {
-      toast.error('Failed to create module. Please try again.');
-    }
-  };
-
-  const moduleTemplates = [
-    { id: 'custom', name: 'Custom Module', description: 'Build from scratch' },
-    { id: 'lecture', name: 'Lecture Module', description: 'Video lecture with resources' },
-    { id: 'assignment', name: 'Assignment Module', description: 'Assignment with submission' },
-    { id: 'reading', name: 'Reading Module', description: 'Text content with quiz' },
-    { id: 'interactive', name: 'Interactive Module', description: 'Mixed content types' }
-  ];
+const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const contentTypes = [
     { id: 'lesson', name: 'Text Lesson', icon: 'FileText', color: 'blue' },
@@ -147,47 +117,6 @@ const ModulesTab = ({
     toast.success('Content removed from module!');
   };
 
-  const createModuleFromTemplate = (template) => {
-    let templateModule = {
-      title: '',
-      description: '',
-      content: []
-    };
-
-    switch (template.id) {
-      case 'lecture':
-        templateModule.content = [
-          { id: Date.now(), type: 'video', title: 'Lecture Video', description: '', content: '', duration: '00:00' },
-          { id: Date.now() + 1, type: 'resource', title: 'Lecture Slides', description: '', content: '' },
-          { id: Date.now() + 2, type: 'quiz', title: 'Knowledge Check', description: '', content: '' }
-        ];
-        break;
-      case 'assignment':
-        templateModule.content = [
-          { id: Date.now(), type: 'lesson', title: 'Assignment Instructions', description: '', content: '' },
-          { id: Date.now() + 1, type: 'assignment', title: 'Submit Assignment', description: '', content: '' },
-          { id: Date.now() + 2, type: 'resource', title: 'Reference Materials', description: '', content: '' }
-        ];
-        break;
-      case 'reading':
-        templateModule.content = [
-          { id: Date.now(), type: 'lesson', title: 'Reading Material', description: '', content: '' },
-          { id: Date.now() + 1, type: 'quiz', title: 'Comprehension Quiz', description: '', content: '' }
-        ];
-        break;
-      case 'interactive':
-        templateModule.content = [
-          { id: Date.now(), type: 'lesson', title: 'Introduction', description: '', content: '' },
-          { id: Date.now() + 1, type: 'video', title: 'Demonstration', description: '', content: '', duration: '00:00' },
-          { id: Date.now() + 2, type: 'assignment', title: 'Practice Exercise', description: '', content: '' },
-          { id: Date.now() + 3, type: 'discussion', title: 'Discussion Forum', description: '', content: '' }
-        ];
-        break;
-    }
-
-    setCurrentModule(templateModule);
-    setSelectedTemplate(template.id);
-  };
 
   const filteredModules = modules.filter(module => {
     const matchesSearch = module.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -262,74 +191,6 @@ const ModulesTab = ({
           <span className="text-sm text-surface-600 bg-surface-100 px-3 py-2 rounded-full">
             {filteredModules.length} of {modules.length} modules
           </span>
-        </div>
-      </div>
-
-      {/* Module Templates */}
-      <div className="card-neu">
-        <h4 className="text-lg font-semibold text-surface-800 mb-4">Create New Module</h4>
-        
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-surface-700 mb-2">Choose Template</label>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3">
-            {moduleTemplates.map((template) => (
-              <button
-                key={template.id}
-                onClick={() => createModuleFromTemplate(template)}
-                className={`p-3 rounded-lg border text-left transition-all duration-200 ${
-                  selectedTemplate === template.id
-                    ? 'border-primary bg-primary/5 text-primary'
-                    : 'border-surface-200 hover:border-surface-300 text-surface-700'
-                }`}
-              >
-                <h5 className="font-medium text-sm">{template.name}</h5>
-                <p className="text-xs opacity-75 mt-1">{template.description}</p>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-surface-700 mb-2">Module Title</label>
-            <input
-              type="text"
-              value={currentModule.title}
-              onChange={(e) => setCurrentModule({...currentModule, title: e.target.value})}
-              className="input-field"
-              placeholder="Enter module title..."
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-surface-700 mb-2">Module Description</label>
-            <input
-              type="text"
-              value={currentModule.description}
-              onChange={(e) => setCurrentModule({...currentModule, description: e.target.value})}
-              className="input-field"
-              placeholder="Brief module description..."
-            />
-          </div>
-        </div>
-        
-        <div className="mt-4 flex justify-end space-x-3">
-          <button 
-            onClick={() => {
-              setCurrentModule({ title: '', description: '', content: [] });
-              setSelectedTemplate('custom');
-            }}
-            className="px-4 py-2 text-surface-600 hover:text-surface-800 transition-colors"
-          >
-            Reset
-          </button>
-<button 
-            onClick={handleCreateModule} 
-            className="btn-secondary"
-            disabled={!currentModule.title || currentModule.title.trim().length < 3}
-          >
-            <ApperIcon name="Plus" className="w-4 h-4 mr-2" />
-            Create Module
-          </button>
         </div>
       </div>
 
@@ -605,6 +466,17 @@ const ModulesTab = ({
           <p>Start building your course by creating your first module above!</p>
         </div>
       )}
+{/* Create Module Modal */}
+      <CreateModuleModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        currentModule={currentModule}
+        setCurrentModule={setCurrentModule}
+        addModule={addModule}
+      />
+    </motion.div>
+  );
+};
     </motion.div>
   );
 };
