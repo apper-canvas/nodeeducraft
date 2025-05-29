@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ApperIcon from '../ApperIcon';
 import VideoPlayer from './VideoPlayer';
+import EditVideoModal from './EditVideoModal';
 import { toast } from 'react-toastify';
 
 const ContentLibrary = () => {
@@ -43,6 +44,7 @@ const ContentLibrary = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [isUploading, setIsUploading] = useState(false);
+const [editingVideo, setEditingVideo] = useState(null);
 
   const categories = ['all', 'Programming', 'Design', 'Business', 'Marketing', 'Science'];
 
@@ -117,6 +119,19 @@ const ContentLibrary = () => {
 
   const closeVideoPlayer = () => {
     setSelectedVideo(null);
+  };
+const openEditModal = (video) => {
+    setEditingVideo(video);
+  };
+
+  const closeEditModal = () => {
+    setEditingVideo(null);
+  };
+
+  const handleVideoUpdate = (updatedVideo) => {
+    setVideos(videos.map(video => 
+      video.id === updatedVideo.id ? updatedVideo : video
+    ));
   };
 
   return (
@@ -268,8 +283,7 @@ const ContentLibrary = () => {
                       e.stopPropagation();
                       // Edit functionality would go here
                       toast.info('Edit functionality coming soon');
-                    }}
-                    className="text-secondary hover:text-secondary-dark p-1"
+openEditModal(video);
                     title="Edit Video"
                   >
                     <ApperIcon name="Edit" className="w-4 h-4" />
@@ -314,6 +328,16 @@ const ContentLibrary = () => {
             videoUrl={selectedVideo.url}
             title={selectedVideo.title}
             onClose={closeVideoPlayer}
+          />
+        )}
+      </AnimatePresence>
+{/* Edit Video Modal */}
+      <AnimatePresence>
+        {editingVideo && (
+          <EditVideoModal
+            video={editingVideo}
+            onSave={handleVideoUpdate}
+            onClose={closeEditModal}
           />
         )}
       </AnimatePresence>
