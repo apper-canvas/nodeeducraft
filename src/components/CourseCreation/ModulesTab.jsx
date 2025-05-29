@@ -475,5 +475,6 @@ const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
         addModule={addModule}
       />
     </motion.div>
+export default ModulesTab;
   );
 };
