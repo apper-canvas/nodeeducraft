@@ -477,8 +477,3 @@ const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     </motion.div>
   );
 };
-    </motion.div>
-  );
-};
-
-export default ModulesTab;
