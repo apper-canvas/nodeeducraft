@@ -93,7 +93,7 @@ const QuizTab = ({
             <label className="block text-sm font-medium text-surface-700 mb-2">
               Question Type
             </label>
-            <select
+<select
               value={currentQuestion.type}
               onChange={(e) => setCurrentQuestion({...currentQuestion, type: e.target.value})}
               className="input-field w-full lg:w-48"
@@ -101,6 +101,12 @@ const QuizTab = ({
               <option value="multiple">Multiple Choice</option>
               <option value="true-false">True/False</option>
               <option value="short">Short Answer</option>
+              <option value="fill-blank">Fill-in-the-Blank</option>
+              <option value="essay">Essay</option>
+              <option value="matching">Matching</option>
+              <option value="ordering">Ordering/Sequencing</option>
+              <option value="rating">Rating Scale</option>
+              <option value="file-upload">File Upload</option>
             </select>
           </div>
 
