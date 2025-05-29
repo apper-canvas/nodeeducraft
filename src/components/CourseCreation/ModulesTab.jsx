@@ -17,6 +17,30 @@ const ModulesTab = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [selectedTemplate, setSelectedTemplate] = useState('custom');
+// Validation and module creation handler
+  const handleCreateModule = () => {
+    // Validate required fields
+    if (!currentModule.title || currentModule.title.trim() === '') {
+      toast.error('Please enter a module title before creating the module.');
+      return;
+    }
+
+    if (currentModule.title.trim().length < 3) {
+      toast.error('Module title must be at least 3 characters long.');
+      return;
+    }
+
+    // Call the addModule function passed as prop
+    try {
+      addModule();
+      // Reset form after successful creation
+      setCurrentModule({ title: '', description: '', content: [] });
+      setSelectedTemplate('custom');
+      toast.success('Module created successfully!');
+    } catch (error) {
+      toast.error('Failed to create module. Please try again.');
+    }
+  };
 
   const moduleTemplates = [
     { id: 'custom', name: 'Custom Module', description: 'Build from scratch' },
@@ -298,7 +322,11 @@ const ModulesTab = ({
           >
             Reset
           </button>
-          <button onClick={addModule} className="btn-secondary">
+<button 
+            onClick={handleCreateModule} 
+            className="btn-secondary"
+            disabled={!currentModule.title || currentModule.title.trim().length < 3}
+          >
             <ApperIcon name="Plus" className="w-4 h-4 mr-2" />
             Create Module
           </button>
