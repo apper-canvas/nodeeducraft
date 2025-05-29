@@ -281,9 +281,9 @@ const openEditModal = (video) => {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      // Edit functionality would go here
-                      toast.info('Edit functionality coming soon');
 openEditModal(video);
+                    }}
+                    className="text-secondary hover:text-secondary-dark p-1"
                     title="Edit Video"
                   >
                     <ApperIcon name="Edit" className="w-4 h-4" />
